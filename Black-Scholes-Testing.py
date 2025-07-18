@@ -129,9 +129,9 @@ def option_pricing_and_var(ticker, option_strike, current_stock_price, time_to_e
     print(f"Call Option Price: {call_price:.4f}")
     print(f"Put Option Price: {put_price:.4f}")
 
-    # Calculate VaR for futures (stock itself)
+    # Calculate VaR for stock itself
     confidence_levels = [0.95, 0.99, 0.975]
-    var_dict_futures = calculate_var(daily_returns, confidence_levels=confidence_levels)
+    var_dict_underlying = calculate_var(daily_returns, confidence_levels=confidence_levels)
 
     # Approximate option returns by scaling stock returns by option prices
     call_returns = daily_returns * (call_price / current_stock_price)
@@ -143,7 +143,7 @@ def option_pricing_and_var(ticker, option_strike, current_stock_price, time_to_e
 
     # Display VaR results
     print(f"\nValue at Risk (VaR) at different confidence levels:")
-    print(f"VaR Futures:\n{pd.Series(var_dict_futures)}")
+    print(f"VaR Underlying:\n{pd.Series(var_dict_underlying)}")
     print(f"VaR Call:\n{pd.Series(var_dict_call)}")
     print(f"VaR Put:\n{pd.Series(var_dict_put)}")
 
@@ -152,14 +152,14 @@ def option_pricing_and_var(ticker, option_strike, current_stock_price, time_to_e
     bar_width = 0.25
     index = np.arange(len(confidence_levels))
 
-    plt.bar(index - bar_width, list(var_dict_futures.values()), bar_width, label='Futures', color='blue')
+    plt.bar(index - bar_width, list(var_dict_underlying.values()), bar_width, label='Futures', color='blue')
     plt.bar(index, list(var_dict_call.values()), bar_width, label='Call', color='green')
     plt.bar(index + bar_width, list(var_dict_put.values()), bar_width, label='Put', color='red')
 
     plt.xlabel('Confidence Level')
     plt.ylabel('Value at Risk (VaR)')
     plt.title(f'VaR at Different Confidence Levels for {ticker}')
-    plt.xticks(index, list(var_dict_futures.keys()))
+    plt.xticks(index, list(var_dict_underlying.keys()))
     plt.legend()
     plt.show()
 
